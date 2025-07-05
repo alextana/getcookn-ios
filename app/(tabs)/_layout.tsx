@@ -15,9 +15,12 @@ const TabsLayout = () => {
 				},
 			}}
 		>
-			<Tabs.Screen name="index" options={{ headerTitle: 'Home' }} />
-			<Tabs.Screen name="saved" />
-			<Tabs.Screen name="search" />
+			<Tabs.Screen
+				name="index"
+				options={{ headerTitle: 'Home', title: 'Home' }}
+			/>
+			<Tabs.Screen name="search" options={{ title: 'Search' }} />
+			<Tabs.Screen name="saved" options={{ title: 'Saved' }} />
 		</Tabs>
 	);
 };

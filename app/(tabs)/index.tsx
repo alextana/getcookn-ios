@@ -1,64 +1,43 @@
-import { useQuery } from '@tanstack/react-query';
-import { Link } from 'expo-router';
-import { Dimensions, FlatList, Text, View } from 'react-native';
+import HomeIntro from '@/src/components/HomeIntro';
+import RecipeDisplay from '@/src/components/RecipeDisplay';
+import { router } from 'expo-router';
+import { SymbolView } from 'expo-symbols';
+import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
 
 export default function HomeScreen() {
-	const query = useQuery({
-		queryKey: ['homeRecipes'],
-		queryFn: getHomeRecipes,
-	});
-
-	interface Recipe {
-		id: string;
-		name: string;
-		description: string;
-	}
-
+	const handleAddRecipeRoute = () => {
+		router.push('/recipes/add');
+	};
 	return (
-		<View
-			style={{
-				height: Dimensions.get('screen').height / 2,
-				width: Dimensions.get('screen').width,
-			}}
-			className="p-4"
-		>
-			<View>
-				<Text className="text-2xl font-bold mb-4">Recipes</Text>
+		<View className="flex-1">
+			<Pressable
+				onPress={handleAddRecipeRoute}
+				className="absolute bottom-[30px] right-[30px] rounded-full bg-blue-500 shadow-md z-50 w-[50px] h-[50px] justify-center items-center"
+			>
+				<SymbolView
+					style={styles.symbol}
+					tintColor={'white'}
+					name="plus"
+					type="hierarchical"
+				/>
+			</Pressable>
+			<View
+				style={{
+					width: Dimensions.get('screen').width,
+				}}
+				className="p-4"
+			>
+				<HomeIntro />
+				<RecipeDisplay limit={20} />
 			</View>
-			<FlatList
-				numColumns={2}
-				horizontal={false}
-				contentContainerClassName="gap-4"
-				columnWrapperClassName="gap-4"
-				data={query.data?.recipes}
-				renderItem={({ item }: { item: Recipe }) => (
-					<Link
-						href={{
-							pathname: '/recipes/[id]',
-							params: { id: item.id, name: item.name },
-						}}
-						push
-						key={item.id}
-					>
-						<View
-							className="shadow-sm rounded-lg bg-white p-4"
-							style={{ width: Dimensions.get('screen').width / 2 - 22 }}
-						>
-							<Text className="">{item.name}</Text>
-						</View>
-					</Link>
-				)}
-			/>
 		</View>
 	);
 }
 
-const getHomeRecipes = async () => {
-	const response = await fetch(
-		'https://getcookn-api.alex-tana1992.workers.dev/recipes',
-	);
-	if (!response.ok) {
-		throw new Error('Network response was not ok');
-	}
-	return response.json();
-};
+const styles = StyleSheet.create({
+	symbol: {
+		width: 28,
+		height: 28,
+		margin: 5,
+	},
+});
